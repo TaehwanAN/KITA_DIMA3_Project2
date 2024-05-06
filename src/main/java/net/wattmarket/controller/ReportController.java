@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.wattmarket.service.ReportService;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class ReportController {
 
     private final ReportService reportService;
@@ -105,7 +107,7 @@ public class ReportController {
     }
 
     //consulting에서도 써야하므로 새롭게 메소드 만듬
-    @GetMapping("/report/getTradePQ")
+    @GetMapping("/report/getAnalysisPQ")
     @ResponseBody
     public Map<String,List<?>> getTradePQ(
         @RequestParam(name="memberId") String memberId

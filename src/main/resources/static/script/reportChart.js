@@ -13,7 +13,6 @@ $(document).ready(function() {
     init();
     
     $('#breakevenBtn').on('click', chart2)
-    // getTradePQ(); //작업중... 근데 뻑나
 });
 /**
  * 에이잭스 실행 목록
@@ -29,13 +28,20 @@ function init(){
         },
         dataType: 'json',
         success: function(resp){
-            console.log("결과: ", resp['result']);
             // AJAX 요청이 성공적으로 완료되면, 이후 함수들을 호출합니다.
             chart1();
             chart3();
             chart2();
-            
         }
+    })
+    $.ajax({
+        url:'report/getAnalysisPQ',
+        type: 'GET',
+        data:{
+            "memberId":memberId
+        },
+        dataType:'json',
+        success: getAnalysisPQ
     })
 }
 
@@ -91,40 +97,49 @@ function chart3(){
         success: drawFuture
     })
 }
-function getTradePQ(){
-    $.ajax({
-        url:'report/getTradePQ',
-        type:'GET',
-        data:{
-            "memberId":memberId
-        },
-        dataType:'json',
-        success: putTradePQ
-    })
-}
 
 /**
  * 
 
  */
-function putTradePQ(resp){
-    console.log(resp)
-    let tradeAmount=0;
-    let tradeRevenue=0;
+function getAnalysisPQ(resp){
+    let analysisAmount=0;
+    let analysisRevenue=0;
+    let analysisType='';
     let progList=getProgList(resp['PredictConsumptionMonths'],resp['PredictConsumption']);
-    console.log(progList)
     // 소비만 하는 경우(일단 3구간에서의 차익만 계산)
     if(memberRole=='ROLE_CONSUMER'){
-        for (let i=1; resp['PredictConsumption'].length; ++i){
-            tradeAmount+=progList['prog3'][i]
-            tradeRevenue+=progList['prog3'][i]*(resp['PredictPriceProg3'][i]-resp['PredictPriceProg1'][i])
+        for (let i=1; i<resp['PredictConsumption'].length; ++i){
+            analysisAmount+=progList['prog3'][i]
+            analysisRevenue+=progList['prog3'][i]*(resp['PredictPriceProg3'][i]-resp['PredictPriceProg1'][i])
         }
-        $('#tradeAmount').html(tradeAmount);
-        $('#tradeRevenue').html(tradeRevenue);
-    } else{ //생산하는경우 -> 두가지 케이스: 1)생산>소비 , 2) 생산<소비
-        
-    }
+        analysisType='구매';
 
+    } else{ //생산하는경우 -> 두가지 케이스: 1)생산>소비 , 2) 생산<소비
+        for(let i=1;i<resp['PredictConsumptionMonths'].length; ++i){
+            analysisAmount+=progList['prog3'][i]-resp['ActualProduction'][i];
+            analysisRevenue+=(resp['PredictPriceProg3'][i]-resp['PredictPriceProg1'][i])*(progList['prog3'][i]-resp['ActualProduction'][i])
+        }
+        if(analysisAmount<0){
+            analysisType='판매';
+            analysisAmount=Math.abs(analysisAmount)
+            analysisRevenue=Math.abs(analysisRevenue)
+            
+        } else{
+            analysisType='구매';
+        }
+
+    }
+    $('#analysisAmount').html(Math.round(analysisAmount));
+    $('#analysisRevenue').html(formatCurrency(analysisRevenue));
+    $('#anlaysisType').html(analysisType);
+
+    // analysisType에 따라 색상 변경
+    if (analysisType == '구매') {
+        $('#analysisType').css('color', '#ff0066');
+    } else if (analysisType == '판매') {
+        $('#analysisType').css('color', '#006600');
+    }
 }
 /**
  * ----------------------------------------------------------------------------
@@ -144,8 +159,6 @@ function getProgList(monthList,consList){
     let prog3List=[];
     for(let i = 0; i<monthList.length; ++i){
         if ((String(monthList[i]).endsWith('7월')) || (String(monthList[i]).endsWith('8월'))){
-            // console.log(monthList[i])
-            // console.log(consList[i])
             if (consList[i]>450){
                 prog1List.push(300);
                 prog2List.push(150);
@@ -393,7 +406,6 @@ function drawPredictProdcution(resp){
     let minProdArr = [];
     let maxProdArr = [];
     let actualProdArr=resp['ActualProduction']
-    console.log(actualProdArr)
     let predictProdArr=resp['PredictProduction'];
     let predictProdMonths=resp['PredictProductionMonths']
     for(let i=0; i<12; ++i){
@@ -662,21 +674,7 @@ window.chartBar = new Chart(ctxBar, {
                             '<span class="far fa-check-circle text-700 me-2"></span>누진 2구간 비중: <span style="color: #ccaa00">' + prog2Percentage + '%</span><br>' +
                             '<span class="far fa-check-circle text-700 me-2"></span>누진 1구간 비중: <span style="color: #66aa00">' + prog1Percentage + '%</span><br>');
 
-        // 3개월치 3구간 소비량 계산: 
-    // 소비만 하는 경우에 최대이득은 (3구간가격-1구간가격)*3구간소비량 + (2구간-1구간)*2구간소비량
-    let prog2cons= getProgList(respData['PredictPriceMonths'],respData['PredictConsumption'])['prog2'];
-    let prog2consSum = prog2cons.slice(1).reduce((a, b) => a + b, 0);
-    let prog3cons= getProgList(respData['PredictPriceMonths'],respData['PredictConsumption'])['prog3'];
-    let prog3consSum = prog3cons.slice(1).reduce((a, b) => a + b, 0);
-    let totalRevenue=0;
-    for(let i=1; i<prog3cons.length;++i){
-        totalRevenue+= (respData['PredictPriceProg3'][i]-respData['PredictPriceProg1'][i])*prog3cons[i]+(respData['PredictPriceProg2'][i]-respData['PredictPriceProg1'][i])*prog2cons[i]
-        
-    }
-    let tradeRevenue=totalRevenue;
-    $('#tradeRevenue').html(formatCurrency(tradeRevenue));
-    let tradeAmount=Math.round(prog2consSum+prog3consSum);
-    $('#tradeAmount').html(tradeAmount);
+
 
 }
 
@@ -786,7 +784,6 @@ function drawBreakeven(resp){
     var chart = new ApexCharts(document.querySelector("#chart2"), options);
     chart.render();
 
-    console.log(requiredMonthsList[requiredMonthsList.length-1])
     let benefitmonths=(requiredMonthsList[requiredMonthsList.length-1]-12)*0.2;
 
     $('#breakevenResult').html(`${Math.floor(benefitmonths/12)}년 ${Math.floor(benefitmonths%12)}개월`);

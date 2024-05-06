@@ -240,15 +240,16 @@
                             </ul>
                         </div>
                         <div class="d-flex pb-0 justify-content-space-between align-items-center"  data-zanim-xs='{"delay":1.2}' data-zanim-trigger="scroll">
-                            <h4><b>와트마켓을 통해 총 <span id="tradeAmount" class="number-emphasize">248</span>kWh를 <span id="tradeType">구매</span>하여
-                                <br><span class="text-emphasize2">총 <span id="tradeRevenue">8만 4500원</span></span>을 절약해보세요!</b></h4>
+                            <h4><b>와트마켓을 통해 총 <span id="analysisAmount" class="number-emphasize">248</span>kWh를 <span id="analysisType">구매</span>하여
+                                <br><span class="text-emphasize2">총 <span id="analysisRevenue">8만 4500원</span></span>을 절약해보세요!</b></h4>
                         </div>
                         <div class="advertise">
                             <a href="#" id="analysisConsult"><img th:src="@{images/icons/7.png}" alt="" width="25px">분석전문가 무료상담</a>
                         </div>
                         <div class="input-group row d-flex justify-content-center">
                             <div class="col-12 text-center">
-                                <button class="btn btn-outline-primary" role="button" id="showPage6" data-zanim-xs='{"delay":1.5}' data-zanim-trigger="scroll">태양광 발전을 시작한다면?</button>
+                                <button th:if="${#authentication.authorities[0].authority=='ROLE_CONSUMER'}" class="btn btn-outline-primary" role="button" id="showPage6" data-zanim-xs='{"delay":1.5}' data-zanim-trigger="scroll">태양광 발전을 시작한다면?</button>
+                                <button th:unless="${#authentication.authorities[0].authority=='ROLE_CONSUMER'}" class="btn btn-outline-primary" role="button" id="showPage6" data-zanim-xs='{"delay":1.5}' data-zanim-trigger="scroll">태양광 패널을 관리해본다면?</button>
                             </div>
                         </div>
                     </div>

@@ -129,9 +129,9 @@
                 <div class="row align-items-center h-100 justify-content-center">
                     <div class="col-6 text-center">
                         <h4 class="text-600"><b>최대로 벌어갈 수 있는 금액은 얼마일까요?</b></h4>
-                        <h2 class="text-1100"><b><span class="fs-5 number-emphasize" id="analysisPrice">22만 5200원</span></b></h2>
+                        <h2 class="text-1100"><b><span class="fs-5 number-emphasize" id="analysisRevenue">22만 5200원</span></b></h2>
                         <input type="text" name="maxPrice" id="maxPrice" value="225200" hidden>
-                        <h4 class="text-900"><b>총 <span class="fs-3" id="analysisMonths">3</span>개월 간 최대 <span class="fs-3" id="analysisAmounts">750</span>kWh  <span class="fs-3" id="analysisResult">판매</span> 가능!</b></h4>
+                        <h4 class="text-900"><b>총 <span class="fs-3" id="analysisMonths">3</span>개월 간 최대 <span class="fs-3" id="analysisAmount">750</span>kWh  <span class="fs-3" id="analysisType">판매</span> 가능!</b></h4>
                         <div class="input-group row d-flex justify-content-center">
                             <div class="col-12 text-center">
                                 <button class="btn btn-sm btn-dark form-control" role="button" id="startMatch"><b>와티 컨설팅 시작하기</b></button>
@@ -150,7 +150,11 @@
                     <div class="col-6 text-start">
                         <h2><b><span class="text-emphasize fs-3">거래조건</span>을 <br><span class="">확인해주세요!</span></b></h2>
                         <!-- <span class="far fa-check-circle text-700 me-2"></span> -->
+                        
                             <div class="row d-block align-items-center" id="matchingInputs">
+                                <form th:action="@{/consult/register}" method="get">
+                                    
+                                
                                 <div class="input-group">
                                     <span for="purchase" class="input-group-text">
                                         <b style="color: #d0021b">구매</b>
@@ -189,6 +193,7 @@
                                     <button class="btn btn-sm btn-dark form-control" role="submit" id="doMatching"><b>매칭하기</b></button>
                                 </div>
                             </div>
+                        </form>
                     </div>
                     <div class="col-6 text-end">
                         <img th:src="@{/images/watty/checkingWatty.png}" alt="" class="h-100 w-100">
