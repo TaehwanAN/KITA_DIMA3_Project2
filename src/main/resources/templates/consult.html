@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>요금컨설팅</title>
+    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/img/apple-touch-icon.png}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/img/favicon-32x32.png}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/img/favicon-16x16.png}">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/favicon.ico}">
+    <!-- <link rel="manifest" href="assets/img/favicons/manifest.json"> -->
+    <!-- <meta name="msapplication-TileImage" content="assets/img/favicons/mstile-150x150.png"> -->
+    <meta name="theme-color" content="#ffffff">
+    <!-- ===============================================-->
+    <!--    Stylesheets-->
+    <!-- ===============================================-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700&amp;family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,300&amp;display=swap" rel="stylesheet">
+    <link th:href="@{/css/theme.css}" rel="stylesheet" />
+    <link th:href="@{/css/user.css}" rel="stylesheet" />
+
+    <!--지정 스크립트-->
+    <script th:src="@{/script/consultControl.js}" defer></script>
+
+    <style>
+        .text-emphasize{
+            color:#f37f29;
+        }
+        .number-emphasize{
+            color:#6f42c1;
+        }
+        .section{
+            padding-top:4rem;
+        }
+        .row{
+            margin-top: 1.8rem;
+        }
+        
+        .form-control{
+            width:50%
+        }
+        #matchingInputs .input-group{
+            padding-top: 1rem;
+            width:80%;
+        }
+        #matchingInputs .input-group-text{
+            width:135px;
+        }
+        
+    </style>
+
+
+</head>
+<body>
+    <main class="main" id="top">
+        <!-- 상단메뉴바 -->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" data-navbar-on-scroll="light">
+            <div class="container"><a class="navbar-brand" th:href="@{/}"><img th:src="@{/images/logo.png}" height="50" alt="logo" /></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse border-top border-lg-0 mt-4 mt-lg-0" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto pt-2 pt-lg-0 font-base align-items-center">
+                    <li class="nav-item"><a class="nav-link px-3" th:href="@{/}">와트마켓</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" th:href="@{/serviceIntro}">서비스소개</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" th:href="@{/consult}">요금컨설팅</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" th:href="@{/report}">분석리포트</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" th:href="@{/mypage}">마이페이지</a></li>
+                    </ul>
+                    <a th:href="@{/loginForm}" sec:authorize="isAnonymous()">
+                        <button class="btn btn-outline-primary btn-xs px-3">로그인</button>
+                    </a>
+                    <a th:href="@{/logout}" sec:authorize="isAuthenticated()">
+                        <button class="btn btn-outline-secondary btn-xs px-3">로그아웃</button>
+                        <input sec:authorize="isAuthenticated()" type="hidden" name="memberId" id="memberId" th:value="${#authentication.principal.username}">
+                        <input sec:authorize="isAuthenticated()" type="hidden" name="memberRole" id="memberRole" th:value="${#authentication.authorities[0].authority}">
+                    </a>
+                </div><!--div.collapse-->
+            </div><!--div.container-->
+        </nav>
+
+        <!-- 홈 메인 -->
+        <section id="page1">
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-start">
+                        <h4 class="fw-normal"><b><span class="text-emphasize">우리집 전기요금 컨설턴트,</span></b></h4>
+                        <h2 class="fw-normal"><b><span class="text-emphasize">와티</span>와 함께하는<br>우리집 전기요금 <span class="text-emphasize fs-4"> 최적화</span></b></h2>
+                        <ul class="list-unstyled py-2">
+                            <li class="my-2 text-1100"> <!-- 확인용@@-->
+                                <img class="bi bi-1-square me-3" th:src="@{/images/icons/1-square.svg}" height="30px"></img>꼼꼼한 <b>분석</b>
+                                <br>    <span class="ms-5 text-700">AI 기반으로 절약할 수 있는 최대금액을 알려드려요.</span>
+                            </li>
+                            <li class="my-2 text-1100">
+                                <img class="bi bi-2-square me-3" th:src="@{/images/icons/2-square.svg}" height="30px"></img>똑똑한 <b>매칭</b>
+                                <br>    <span class="ms-5 text-700">AI 기반으로 최대 이익을 얻을 수 있는 거래를 매칭해요.</span>
+                            </li>
+                            <li class="my-2 text-1100">
+                                <img class="bi bi-3-square me-3" th:src="@{/images/icons/3-square.svg}" height="30px"></img>신속한 <b>거래</b>
+                                <br>    <span class="ms-5 text-600">복잡한 거래를 단 몇번의 클릭으로 가능하도록 도와드려요.</span>
+                            </li>
+                        </ul>
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-sm btn-dark form-control" role="button" id="startConsult"><b>와티 컨설팅 시작하기</b></button>
+                            </div>
+                        </div>
+                    </div><!--div.col-6-->
+                    <div class="col-6 text-end">
+                        <img th:src="@{/images/watty/reportingWatty.png}" alt="" class="h-100 w-100">
+                    </div>
+                </div><!--div.row-->
+            </div><!--div.container-->
+        </section>
+
+        <section id="loading" >
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-end">
+                        <h2 class=" fw-normal"><b>와티의 <span class="text-emphasize fs-3">분석</span>이 진행 중입니다.<br>잠시만 기다려주세요.</b></h2>                    
+                    </div>
+                    <div class="col-6 text-end">
+                        <img th:src="@{/images/watty/loadingWatty.gif}" alt="" class="h-100 w-100">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="page2" >
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-center">
+                        <h4 class="text-600"><b>최대로 벌어갈 수 있는 금액은 얼마일까요?</b></h4>
+                        <h2 class="text-1100"><b><span class="fs-5 number-emphasize" id="analysisPrice">22만 5200원</span></b></h2>
+                        <input type="text" name="maxPrice" id="maxPrice" value="225200" hidden>
+                        <h4 class="text-900"><b>총 <span class="fs-3" id="analysisMonths">3</span>개월 간 최대 <span class="fs-3" id="analysisAmounts">750</span>kWh  <span class="fs-3" id="analysisResult">판매</span> 가능!</b></h4>
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-sm btn-dark form-control" role="button" id="startMatch"><b>와티 컨설팅 시작하기</b></button>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="col-6 text-end">
+                        <img th:src="@{/images/watty/haloWatty.png}" alt="" class="h-100 w-100">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="page3" >
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-start">
+                        <h2><b><span class="text-emphasize fs-3">거래조건</span>을 <br><span class="">확인해주세요!</span></b></h2>
+                        <!-- <span class="far fa-check-circle text-700 me-2"></span> -->
+                            <div class="row d-block align-items-center" id="matchingInputs">
+                                <div class="input-group">
+                                    <span for="purchase" class="input-group-text">
+                                        <b style="color: #d0021b">구매</b>
+                                        <input type="radio" class="form-check-input btn-outline-danger ms-4" name="tradeType" value="purchase">
+                                    </span>
+                                    <span for="sale" class="input-group-text">
+                                        <b style="color: #7ed321">판매</b>
+                                        <input type="radio" class="form-check-input btn-outline-success ms-4" name="tradeType" value="sale">
+                                    </span>
+                                </div>
+                                <div class="input-group"> 
+                                    <span for="endDate" class="fs-0 fw-bold input-group-text"><b>전력수급 시작일</b></span> 
+                                    <input type="date" class="form-control" value="2024-05-04" id="startDate"> 
+                                </div>
+                                <div class="input-group">
+                                    <span for="endDate" class="fs-0 fw-bold input-group-text"><b>전력수급 종료일</b></span> 
+                                    <input type="date" class="form-control" value="2024-08-03" id="endDate"> 
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-text"><b>총 거래 전력</b></span>
+                                    <input type="text" class="form-control" id="tradeAmount" value="750">
+                                    <span class="input-group-text" style="width:70px">kWh</span>
+                                </div>
+                                <div class="input-group">
+                                    <p class="fs-1 text-900">
+                                        <b>최소한 얼마 이상에 거래하시겠어요?
+                                        </b>
+                                    </p>
+                                    <span class="input-group-text"><b>매칭조건:</b></span>
+                                    <input type="text" class="form-control btn-outline-primary" id="minPrice" value="190000">
+                                    <span class="input-group-text"><b>원 이상만 매칭</b></span>
+                                </div>
+                            </div>
+                            <div class="input-group row d-flex justify-content-center">
+                                <div class="col-12 text-center">
+                                    <button class="btn btn-sm btn-dark form-control" role="submit" id="doMatching"><b>매칭하기</b></button>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="col-6 text-end">
+                        <img th:src="@{/images/watty/checkingWatty.png}" alt="" class="h-100 w-100">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="matching" >
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-end">
+                        <h2 class=" fw-normal"><b>와티의 <span class="text-emphasize fs-3">매칭</span>이 진행 중입니다.<br>잠시만 기다려주세요.</b></h2>                    
+                    </div>
+                    <div class="col-6 text-end">
+                        <img th:src="@{/images/watty/matchingWatty.gif}" alt="" class="h-100 w-100">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="page4" >
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-start">
+                        <h4 class="text-600"><b>실제로 거래가능한 금액은 얼마일까요?</b></h4>
+                        <h2 class="text-1100"><b><span class="fs-5 number-emphasize" id="matchPrice">22만 5200원</span></b></h2>
+                        <input type="text" name="tradePrice" id="tradePrice" value="225200" hidden>
+                        <h4 class="fw-normal"><b>설정하신 금액보다<br><span class="fs-3 number-emphasize" id="resultPercent">12</span>% 높은 가격으로 <br> 거래하실 수 있습니다.</b></h4>
+                        <p class="fw-normal text-900">
+                            <b><span style="color:#d0021b">기다리기</span>를 클릭하시면,<br>
+                                더 나은 거래가격이 매칭되면, <span class="fs-2 text-emphasize">알림</span>을 보내드립니다.
+                            </b>
+                        </p>
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-sm btn-outline-success form-control" role="button" id="doTrade"><b>지금바로 거래하기</b></button>
+                            </div>
+                        </div> 
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-sm btn-outline-danger form-control" role="button" id="waitTrade"><b>다른조건 기다리기</b></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 text-end">
+                        <img th:src="@{/images/watty/spaceWatty.gif}" alt="" class="h-100 w-100">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="page5">
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-start">
+                        <h2 class="fw-normal"><b>이용해주셔서 감사합니다. <br>
+                            <span class="text-emphasize">더 스마트한</span> 전기요금, </b><br><b>와티가 지원할게요!</b></h2>
+                            <p class="fw-normal">컨설팅에 활용된 내용이 궁금하시다면?<br>
+                            </p>
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-sm btn-dark form-control" role="button" id="startConsult"><b>와티 컨설팅 시작하기</b></button>
+                            </div>
+                        </div>
+                    </div><!--div.col-6-->
+                    <div class="col-6 text-end">
+                        <img th:src="@{/images/watty/thanksWatty.png}" alt="" class="h-100 w-100">
+                    </div>
+                </div><!--div.row-->
+            </div><!--div.container-->
+        </section>
+    </main>
+    <!-- ===============================================-->
+    <!--    JavaScripts-->
+    <!-- ===============================================-->
+    <script src="vendors/popper/popper.min.js"></script>
+    <script src="vendors/bootstrap/bootstrap.min.js"></script>
+    <script src="vendors/anchorjs/anchor.min.js"></script>
+    <script src="vendors/is/is.min.js"></script>
+    <script src="vendors/fontawesome/all.min.js"></script>
+    <script src="vendors/lodash/lodash.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
+    <script src="vendors/imagesloaded/imagesloaded.pkgd.js"></script>
+    <script src="vendors/gsap/customEase.js"></script>
+    <script src="vendors/gsap/scrollToPlugin.js"></script>
+    <!--script(src=`${CWD}vendors/gsap/drawSVGPlugin.js`)-->
+    <script th:src="@{/script/theme.js}"></script>
+    <script th:src="@{/script/jquery-3.7.1.min.js}"></script>
+</body>
+</html>

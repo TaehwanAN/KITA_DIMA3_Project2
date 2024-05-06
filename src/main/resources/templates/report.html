@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>분석리포트</title>
+    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/img/apple-touch-icon.png}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/img/favicon-32x32.png}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/img/favicon-16x16.png}">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/favicon.ico}">
+    <!-- <link rel="manifest" href="assets/img/favicons/manifest.json"> -->
+    <!-- <meta name="msapplication-TileImage" content="assets/img/favicons/mstile-150x150.png"> -->
+    <meta name="theme-color" content="#ffffff">
+    <!-- ===============================================-->
+    <!--    Stylesheets-->
+    <!-- ===============================================-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700&amp;family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,300&amp;display=swap" rel="stylesheet">
+    <link th:href="@{/css/theme.css}" rel="stylesheet" />
+    <link th:href="@{/css/user.css}" rel="stylesheet" />
+
+    <!--지정 스크립트-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script th:src="@{/script/reportControl.js}" defer></script>
+    <script th:src="@{/script/reportChart.js}" defer></script>
+
+    <style>
+        canvas{
+            background-color: rgba(0,0,33,0.8);
+            border: 3px solid #6f42c1;
+            border-radius: 5%;
+
+        }
+        .text-emphasize{
+            color:#f37f29;
+        }
+        .text-emphasize2{
+            color: #dd4b39;
+        }
+        .number-emphasize{
+            color: #6f42c1
+        }
+    </style>
+
+
+</head>
+<body>
+    <main class="main" id="top">
+        <!-- 상단메뉴바 -->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" data-navbar-on-scroll="light">
+            <div class="container"><a class="navbar-brand" th:href="@{/}"><img th:src="@{/images/logo.png}" height="50" alt="logo" /></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse border-top border-lg-0 mt-4 mt-lg-0" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto pt-2 pt-lg-0 font-base align-items-center">
+                    <li class="nav-item"><a class="nav-link px-3" th:href="@{/}">와트마켓</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" th:href="@{/serviceIntro}">서비스소개</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" th:href="@{/consult}">요금컨설팅</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" th:href="@{/report}">분석리포트</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" th:href="@{/mypage}">마이페이지</a></li>
+                    </ul>
+                    <a th:href="@{/loginForm}" sec:authorize="isAnonymous()">
+                        <button class="btn btn-outline-primary btn-xs px-3">로그인</button>
+                    </a>
+                    <a th:href="@{/logout}" sec:authorize="isAuthenticated()">
+                        <button class="btn btn-outline-secondary btn-xs px-3">로그아웃</button>
+                        <input sec:authorize="isAuthenticated()" type="hidden" name="memberId" id="memberId" th:value="${#authentication.principal.username}">
+                        <input sec:authorize="isAuthenticated()" type="hidden" name="memberRole" id="memberRole" th:value="${#authentication.authorities[0].authority}">
+                    </a>
+                </div><!--div.collapse-->
+            </div><!--div.container-->
+        </nav>
+
+        <!-- 홈 메인 -->
+        <section class="pt-8" id="page1">
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-start">
+                        <h2 class="fw-normal" data-zanim-xs='{"delay":0.3}' data-zanim-trigger="scroll"><b>와트의 분석리포트란?</b></h2>
+                        <h4 class="fw-normal" data-zanim-xs='{"delay":0.6}' data-zanim-trigger="scroll">
+                            <b>AI를 통해 당신의 전력사용 패턴을 분석 및 예측합니다.</b>
+                        </h4>
+                        <p data-zanim-xs='{"delay":0.7}' data-zanim-trigger="scroll"><u>다음의 사항으로부터 <b style="color: rgba(39, 39, 142, 0.775)">인사이트</b>를 도출합니다.</u></p>
+                        <ul class="list-unstyled" data-zanim-xs='{"delay":0.9}' data-zanim-trigger="scroll" style="font-size: 20px;">
+                            <li class="text-900">
+                                <img th:src="@{/images/icons/1-square.svg}" alt="">
+                                사용자의 과거 및 현재 누진구간별 전력사용량
+                            </li>
+                            <li class="text-900">
+                                <img th:src="@{/images/icons/2-square.svg}" alt="">
+                                미래의 전력사용량 및 전력요금 변동성 예측
+                            </li>
+                            <li class="text-900">
+                                <img th:src="@{/images/icons/3-square.svg}" alt="">
+                                <span th:if="${#authentication.authorities[0].authority=='ROLE_PROSUMER'}">
+                                    사용자의 태양광 패널의 상태 추정
+                                </span>
+                                <span th:unless="${#authentication.authorities[0].authority=='ROLE_PROSUMER'}">
+                                    태양광 발전으로 전환 시 손익분기점
+                                </span>
+                            </li>
+                        </ul>
+                        <h4  data-zanim-xs='{"delay":1.2}' data-zanim-trigger="scroll">
+                            <b>리포트를 통해 사용자의<br>전기요금 <span class="text-emphasize"> 최적화 솔루션</span>을 제공합니다.</b>
+                        </h4>
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-outline-primary" role="button" id="startReport" data-zanim-xs='{"delay":1.5}' data-zanim-trigger="scroll">리포트 확인</button> <br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 text-end">
+                        <img th:src="@{/images/illustration/analysisReport.jpg}" alt="" class="h-100 w-100">
+                    </div>
+                </div><!--div.row-->
+            </div><!--div.container-->
+        </section>
+        <section id="page2">
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-start">
+                        <img th:src="@{/images/illustration/trafficLight.jpg}" alt="" class="h-100 w-100">
+                    </div>
+                    <div class="col-6 text-end">
+                        <h2 data-zanim-xs='{"delay":0.3}' data-zanim-trigger="scroll"><b><span class="text-emphasize">누진 </span>구간 확인하기</b></h2>
+                        <h4 data-zanim-xs='{"delay":0.6}' data-zanim-trigger="scroll">
+                            <b>리포트는 <u><span style="color: #006600;">신</span><span style="color: #ccaa00;">호</span><span style="color: #FF0066;">등</span></u> 색에 맞추어 <br>누진구간별 전력량을 보여드립니다.</b>
+                        </h4>
+                        <h4 data-zanim-xs='{"delay":0.9}' data-zanim-trigger="scroll"> <b>전력사용량별 누진요금</b></h4>
+                        <ul class="list-unstyled py-0" data-zanim-xs='{"delay":0.9}' data-zanim-trigger="scroll">
+                            <li class="text-900" style="color: #006600 !important;">
+                                <span class="far fa-check-circle text-700 me-2"></span>1구간: ~ 200 kWh = <b>120원/kWh</b>
+                            </li>
+                            <li class="text-900" style="color: #ccaa00 !important;">
+                                <span class="far fa-check-circle text-700 me-2"></span>2구간: 200 ~ 400 kWh = <b>214.4원/kWh</b>
+                                <p hidden>기준:주택용 기타계절</p>
+                            </li>
+                            <li class="text-900" style="color: #FF0066 !important;">
+                                <span class="far fa-check-circle text-700 me-2"></span>3구간 400 ~ kWh = <b>307.3원/kWh</b>
+                                <p hidden>기준: 주택용 기타계절</p>
+                            </li>
+                        </ul>
+                        <p data-zanim-xs='{"delay":1.2}' data-zanim-trigger="scroll">참고: 여름(7월,8월)의 경우 기준구간이 300kWh,450kWh로 변경됩니다.</p>
+                        
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-outline-primary" role="button" id="showFirstChart" data-zanim-xs='{"delay":1.5}' data-zanim-trigger="scroll">최근 1년 사용패턴 확인하기</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div><!--div.row-->
+            </div><!--div.container-->
+        </section>
+        <section id="page3">
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-start">
+                        <h2 data-zanim-xs='{"delay":0.3}' data-zanim-trigger="scroll"><b>나의 전력소비패턴</b></h2><br>
+                        <h4 data-zanim-xs='{"delay":0.6}' data-zanim-trigger="scroll"><u><b>체크리스트</b></u></h4>
+                        <ul class="list-unstyled" data-zanim-xs='{"delay":0.9}' data-zanim-trigger="scroll">
+                            <li class="text-900" id="chart1result1">
+                                <span class="far fa-check-circle text-700 me-2"></span>작년 한 해 월평균 사용량:
+                            </li>
+                            <li class="text-900" id="chart1result2">
+                                <span class="far fa-check-circle text-700 me-2"></span>평월 대비 여름 월평균 사용량:
+                            </li>
+                            <li class="text-900" id="chart1result3">
+                                <span class="far fa-check-circle text-700 me-2"></span>누진 2구간 총사용량: 
+                            </li>
+                        </ul>
+                        <div class="advertise">
+                            <a href="#" id="homeConsult"><img th:src="@{images/icons/12.png}" alt="" width="25px">가전제품 케어 무료상담</a>
+                        </div>
+                        <p data-zanim-xs='{"delay":1.2}' data-zanim-trigger="scroll">
+                            막대에 마우스를 올리면 값을 확인할 수 있습니다.<br>
+                            상단 구간선택을 통해 특정 구간에서의 사용량을 확인할 수 있습니다.<br>
+                            * 10 kWh 소모시: &nbsp; 냉장고 27시간 | 에어컨 8시간 | 컴퓨터 21시간
+                        </p>
+
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-outline-primary" role="button" id="showPage4" data-zanim-xs='{"delay":1.5}' data-zanim-trigger="scroll">다음 리포트</button><br>
+                            </div>
+                        </div>                    
+                        
+                    </div>
+                    <div class="col-6" data-zanim-xs='{"delay":0.3}' data-zanim-trigger="scroll">
+                        <canvas id="chart1" style="height:580px; width: 100%;"></canvas>
+                    </div>
+                </div>
+            </div><!--div.container-->
+        </section>
+        <section id="page4">
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-start">
+                        <img th:src="@{/images/illustration/timeSeries.jpg}" alt="" class="h-100 w-100">
+                    </div>
+                    <div class="col-6 text-end">
+                        <h2 data-zanim-xs='{"delay":0.3}' data-zanim-trigger="scroll"><b>전기요금 예측</b></h2>
+                        <h4 data-zanim-xs='{"delay":0.6}' data-zanim-trigger="scroll">
+                            <b><u>사용자의 과거 패턴</u>을 분석,<br> <span class="text-emphasize">전력사용량</span>을 <span class="text-emphasize2">시계열 모델</span>로 예측합니다.
+                        </h4>
+                        <p data-zanim-xs='{"delay":0.9}' data-zanim-trigger="scroll">ARIMA 모델은 추세,계절성,순환성을 분석해 미래 3개월의 전력사용량을 제공합니다.</p>
+                        <h4 data-zanim-xs='{"delay":0.6}' data-zanim-trigger="scroll">
+                            <b>물가, 원료, 예측수요에 기반,<br>한전의 <span class="text-emphasize">전기요금</span> 의사결정을 <span class="text-emphasize2">딥러닝모델</span>로 학습합니다.</b>
+                        </h4>
+                        <p data-zanim-xs='{"delay":0.9}' data-zanim-trigger="scroll">학습한 LSTM 모델은 현 시점 기준 향후 3개월의 전기가격을 제공합니다.</p>
+                        <h4 data-zanim-xs='{"delay":1.2}' data-zanim-trigger="scroll">
+                            <b>예측을 바탕으로<br><span style="color: rgba(231, 19, 19, 0.775);">전기요금 폭탄</span>을 미리 대비하세요.</b>
+                        </h4>
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-outline-primary" role="button" id="showSecondChart" data-zanim-xs='{"delay":1.5}' data-zanim-trigger="scroll">미래 전기요금 확인하기</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!--div.row-->
+            </div><!--div.container-->
+        </section>
+        <section id="page5">
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-start">
+                        <h4 data-zanim-xs='{"delay":0.3}' data-zanim-trigger="scroll">
+                            <b>AI기반 우리집 전기요금 예측</b>
+                        </h4>
+                        <h4 data-zanim-xs='{"delay":0.6}' data-zanim-trigger="scroll">
+                            <b>다음 3개월 <span class="text-emphasize">누진 구간을 낮출</span> 거래전력량을 확인해요.</b>
+                        </h4>
+                        <div class="d-flex justify-content-space-between align-item-center my-0">
+                            <ul class="list-unstyled">
+                                <li class="mb-0 text-900" id="chart3result1" data-zanim-xs='{"delay":0.9}' data-zanim-trigger="scroll" style="font-size: 19px;">
+                                    <span class="far fa-check-circle text-700 me-2"></span>누진 1구간 비중: <br>
+                                    <span class="far fa-check-circle text-700 me-2"></span>누진 2구간 비중: <br>
+                                    <span class="far fa-check-circle text-700 me-2"></span>누진 3구간 비중: <br>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="d-flex pb-0 justify-content-space-between align-items-center"  data-zanim-xs='{"delay":1.2}' data-zanim-trigger="scroll">
+                            <h4><b>와트마켓을 통해 총 <span id="tradeAmount" class="number-emphasize">248</span>kWh를 <span id="tradeType">구매</span>하여
+                                <br><span class="text-emphasize2">총 <span id="tradeRevenue">8만 4500원</span></span>을 절약해보세요!</b></h4>
+                        </div>
+                        <div class="advertise">
+                            <a href="#" id="analysisConsult"><img th:src="@{images/icons/7.png}" alt="" width="25px">분석전문가 무료상담</a>
+                        </div>
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-outline-primary" role="button" id="showPage6" data-zanim-xs='{"delay":1.5}' data-zanim-trigger="scroll">태양광 발전을 시작한다면?</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 text-center">
+                        <div class="row align-items-center h-100 justify-content-center">
+                            <canvas id="chart3" style="height:280px; width: 100%;" data-zanim-xs='{"delay":0.6}' data-zanim-trigger="scroll"></canvas>
+                        </div>
+                        <div class="row align-items-center h-100 justify-content-center">
+                            <canvas id="chart4" style="height:280px; width: 100%;" data-zanim-xs='{"delay":1.2}' data-zanim-trigger="scroll"></canvas>
+                        </div>
+                    </div>
+                </div><!--div.row-->
+            </div><!--div.container-->
+        </section>
+        
+        <section id="page6">
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div class="col-6 text-start">
+                        <img th:if="${#authentication.authorities[0].authority=='ROLE_CONSUMER'}" th:src="@{/images/illustration/solarBreakeven.jpg}" alt="" class="h-100 w-100">
+                        <img th:unless="${#authentication.authorities[0].authority=='ROLE_CONSUMER'}" th:src="@{/images/illustration/solarPanel.jpg}" alt="" class="h-100 w-100">
+                    </div>
+                    <div th:if="${#authentication.authorities[0].authority=='ROLE_CONSUMER'}" class="col-6 text-end">
+                        <h2 data-zanim-xs='{"delay":0.3}' data-zanim-trigger="scroll"><b>태양광발전 손익분기점 확인</b></h2>
+                        <h4 data-zanim-xs='{"delay":0.6}' data-zanim-trigger="scroll">
+                            <b>설치지역과 날씨, 예상발전량을 기반으로<br>태양광 패널 설치시 <span class="text-emphasize">순이익 시점</span>을 제공합니다.</b>
+                        </h4>
+                        <p data-zanim-xs='{"delay":0.9}' data-zanim-trigger="scroll">LGBM 모델은 태양광 발전량에 대한 회귀 분석을 통하여<br>태양광 발전기 설치시의 월별 발전량을 추정합니다.</p>
+                        <h4 data-zanim-xs='{"delay":1.2}' data-zanim-trigger="scroll">
+                            <b>설치비용과 예상이익을 비교하여<br><span class="text-emphasize2">효율적인 의사결정</span>을 내리세요.</b>
+                        </h4>
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-outline-primary" role="button" id="showThirdChart" data-zanim-xs='{"delay":1.5}' data-zanim-trigger="scroll">손익분기 리포트 보기</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:unless="${#authentication.authorities[0].authority=='ROLE_CONSUMER'}" class="col-6 text-end">
+                        <h2 data-zanim-xs='{"delay":0.3}' data-zanim-trigger="scroll"><b>태양광발전 마이리포트</b></h2>
+                        <h4 data-zanim-xs='{"delay":0.6}' data-zanim-trigger="scroll">
+                            <b>평균기온, 태양광 일사량 등 <u>날씨 정보</u>를 기반으로<br>당신의 태양광 패널의 <span class="text-emphasize">건강, 효율, 수명</span>을 자동으로 점검합니다.</b>
+                        </h4>
+                        <p data-zanim-xs='{"delay":0.9}' data-zanim-trigger="scroll">LGBM 모델은 태양광 발전량에 대한 회귀 분석을 통하여<br>당신의 태양광 발전기의 작년 한 해의 발전량을 추정합니다.</p>
+                        <h4 data-zanim-xs='{"delay":1.2}' data-zanim-trigger="scroll">
+                            <b>실제발전량과 추정발전량을 비교하여<br>태양광 패널과 전기요금을 동시에 <span class="text-emphasize2">최적화</span>하세요.</b>
+                        </h4>
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-outline-primary" role="button" id="showThirdChart" data-zanim-xs='{"delay":1.5}' data-zanim-trigger="scroll">태양광 관리 리포트 보기</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div><!--div.row-->
+            </div><!--div.container-->
+        </section>
+        <section id="page7">
+            <div class="container">
+                <div class="row align-items-center h-100 justify-content-center">
+                    <div th:if="${#authentication.authorities[0].authority=='ROLE_CONSUMER'}" class="col-6 text-start">
+                        <h4 data-zanim-xs='{"delay":0.3}' data-zanim-trigger="scroll">
+                            <b>태양광 발전을 시작해 보세요! <br>더 많은 <span class="text-emphasize">수익</span>이 발생합니다.</b>
+                        </h4>
+                        <div class="input-group" data-zanim-xs='{"delay":0.6}' data-zanim-trigger="scroll">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <b>예상 설비량</b>
+                                </span>
+                                <span class="input-group-text">
+                                    <b>3 kW</b>
+                                    <input class="form-check-input mt-0 ms-3" type="radio" value="3" name="capacity" checked>
+                                </span>
+                                <span class="input-group-text">
+                                    <b>5 kW</b>
+                                    <input class="form-check-input mt-0 ms-3" type="radio" value="5" name="capacity">
+                                </span>
+                                <span class="input-group-text">
+                                    <b>6 kW</b>
+                                    <input class="form-check-input mt-0 ms-3" type="radio" value="6" name="capacity">
+                                </span>
+                                <span class="input-group-text">
+                                    <b>10 kW</b>
+                                    <input class="form-check-input mt-0 ms-3" type="radio" value="10" name="capacity">
+                                </span>
+                            </div>
+                            <div class="input-group py-3" data-zanim-xs='{"delay":0.6}' data-zanim-trigger="scroll" style="width:500px">
+                                <span class="input-group-text"><b>예상 설치비용</b></span>
+                                <input type="text" class="form-control" aria-label="cost" id="cost" value="600">
+                                <span class="input-group-text"><b>만원</b></span>
+                                <button role="button" name="breakevenBtn" id="breakevenBtn" class="form-contorl" ><b>확인하기</b></button>
+                            </div>
+                            <div class="input-group" data-zanim-xs='{"delay":0.9}' data-zanim-trigger="scroll">
+                                <h4 class="fw-normal">
+                                    <b>와트마켓 서비스 이용시 손익분기점을 <br>
+                                        <span class="text-emphasize2" id="breakevenResult">2년 3개월</span> 앞 당길 수 있습니다.</b>
+                                </h4>
+
+                            </div>
+                        </div>
+                        <div class="advertise">
+                            <a href="#" id="homeConsult"><img th:src="@{images/icons/11.png}" alt="" width="25px">태양광 패널 구매 무료상담</a>
+                        </div>
+                        
+
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-outline-primary" role="button" id="showPage8" data-zanim-xs='{"delay":1.2}' data-zanim-trigger="scroll">분석 마치기</button>
+                            </div>
+                        </div>                    
+                        
+                    </div>
+                    <div th:unless="${#authentication.authorities[0].authority=='ROLE_CONSUMER'}" class="col-6 text-start">
+                        <h4 data-zanim-xs='{"delay":0.3}' data-zanim-trigger="scroll">
+                            <b>우리집 태양광 패널을 <span class="text-emphasize">건강</span>할까? <br>전력 손실을 줄여보세요!</b>
+                        </h4>
+                        
+
+                        <ul class="list-unstyled" data-zanim-xs='{"delay":0.6}' data-zanim-trigger="scroll">
+                            <li class="mb-3 text-900" id="chart2result1">
+                                <span class="far fa-check-circle text-700 me-2"></span>작년 한 해 월평균 발전량:
+                            </li>
+                            <li class="mb-3 text-900" id="chart2result2">
+                                <span class="far fa-check-circle text-700 me-2"></span>추정발전량과 실제발전량의 평균 차이:
+                            </li>
+                            <li class="mb-3 text-900" id="chart2result3">
+                                <span class="far fa-check-circle text-700 me-2"></span>태양광 패널의 관리 상태 -
+                            </li>
+                        </ul>
+                            
+                            
+                        
+                        <div class="advertise">
+                            <a href="#" id="homeConsult"><img th:src="@{images/icons/9.png}" alt="" width="25px">패널 관리 서비스 무료상담</a>
+                        </div>
+                        
+
+                        <div class="input-group row d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-outline-primary" role="button" id="showPage8" data-zanim-xs='{"delay":1.2}' data-zanim-trigger="scroll">분석 마치기</button>
+                            </div>
+                        </div>                    
+                    </div>
+                <div class="col-6" data-zanim-xs='{"delay":0.3}' data-zanim-trigger="scroll">
+                    <div th:if="${#authentication.authorities[0].authority=='ROLE_CONSUMER'}" id="chart2" style="height:580px; width: 100%;"></div>
+                    <canvas th:unless="${#authentication.authorities[0].authority=='ROLE_CONSUMER'}" id="chart2" style="height:580px; width: 100%;"></canvas>
+                </div>
+                </div><!--div.row-->
+            </div><!--div.container-->
+        </section>
+
+    </main>
+    <!-- ===============================================-->
+    <!--    JavaScripts-->
+    <!-- ===============================================-->
+    <script src="vendors/popper/popper.min.js"></script>
+    <script src="vendors/bootstrap/bootstrap.min.js"></script>
+    <script src="vendors/anchorjs/anchor.min.js"></script>
+    <script src="vendors/is/is.min.js"></script>
+    <script src="vendors/fontawesome/all.min.js"></script>
+    <script src="vendors/lodash/lodash.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
+    <script src="vendors/imagesloaded/imagesloaded.pkgd.js"></script>
+    <script src="vendors/gsap/customEase.js"></script>
+    <script src="vendors/gsap/scrollToPlugin.js"></script>
+    <!--script(src=`${CWD}vendors/gsap/drawSVGPlugin.js`)-->
+    <script th:src="@{/script/theme.js}"></script>
+    <script th:src="@{/script/jquery-3.7.1.min.js}"></script>
+    
+</body>
+</html>
