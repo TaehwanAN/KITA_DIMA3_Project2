@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.wattmarket.service.ConsultService;
 import net.wattmarket.service.ReportService;
 
 @Controller
@@ -20,6 +21,7 @@ import net.wattmarket.service.ReportService;
 public class ConsultController {
 
     private final ReportService reportService;
+    private final ConsultService consultService;
 
     
     private Map<String,List<?>> prodActual=null;
@@ -75,7 +77,9 @@ public class ConsultController {
         @RequestParam(name="minPrice") int minPrice
     ){
         if(tradeType.equals("purchase")){
-
+            consultService.registerPurchase(memberId, startDate, endDate, tradeAmount, minPrice);
+        } else if(tradeType.equals("sale")){
+            consultService.registerSale(memberId, startDate, endDate, tradeAmount, minPrice);
         }
 
         return true;

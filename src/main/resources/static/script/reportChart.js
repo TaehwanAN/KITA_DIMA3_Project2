@@ -121,18 +121,19 @@ function getAnalysisPQ(resp){
             analysisRevenue+=(resp['PredictPriceProg3'][i]-resp['PredictPriceProg1'][i])*(progList['prog3'][i]-resp['ActualProduction'][i])
         }
         if(analysisAmount<0){
-            analysisType='판매';
+            
+            analysisType+='판매';
             analysisAmount=Math.abs(analysisAmount)
             analysisRevenue=Math.abs(analysisRevenue)
             
         } else{
-            analysisType='구매';
+            analysisType+='구매';
         }
 
     }
     $('#analysisAmount').html(Math.round(analysisAmount));
     $('#analysisRevenue').html(formatCurrency(analysisRevenue));
-    $('#anlaysisType').html(analysisType);
+    $('#analysisType').html(analysisType);
 
     // analysisType에 따라 색상 변경
     if (analysisType == '구매') {

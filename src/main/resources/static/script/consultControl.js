@@ -154,7 +154,7 @@ function putAnalysisPQ(resp){
     }
     $('#analysisAmount').html(Math.round(analysisAmount));
     $('#analysisRevenue').html(formatCurrency(analysisRevenue));
-    $('#anlaysisType').html(analysisType);
+    $('#analysisType').html(analysisType);
 
     // analysisType에 따라 색상 변경
     if (analysisType == '구매') {
