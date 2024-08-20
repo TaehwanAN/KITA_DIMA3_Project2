@@ -8,7 +8,6 @@
 - 링크: https://docs.google.com/presentation/d/1K8PSgw-dyGTavvdXkbQSpFyOWbG_GGBd/edit?usp=drive_link&ouid=105847620735096186183&rtpof=true&sd=true
 ![image](https://github.com/user-attachments/assets/75bf53fa-ede9-45d5-8cb6-5f56e20fe65e)
 ![image](https://github.com/user-attachments/assets/df17a60d-a2c0-4275-8f91-15fc3dc8660e)
-![image](https://github.com/user-attachments/assets/25114acf-80a0-4de4-aa23-5dd97ce592c7)
 ![image](https://github.com/user-attachments/assets/35fddc68-beb5-44e9-abe2-72c579948736)
 ![image](https://github.com/user-attachments/assets/62c00f2b-950a-48c1-b4e2-fa3550c25dd6)
 ![image](https://github.com/user-attachments/assets/767b449b-c33d-4573-a6a6-782b4fe9a974)
